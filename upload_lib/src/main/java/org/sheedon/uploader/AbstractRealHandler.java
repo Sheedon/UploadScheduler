@@ -1,7 +1,5 @@
 package org.sheedon.uploader;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,6 +165,17 @@ public abstract class AbstractRealHandler<Source> {
      * @param center 消息执行处理中心
      */
     protected abstract void handleRealEvent(Source source, MessageHandleCenter center);
+
+
+    /**
+     * 销毁
+     */
+    public void destroy() {
+        if(scheduleClient != null){
+            scheduleClient.removeEvent(this.getClass().getCanonicalName());
+        }
+        sources.clear();
+    }
 
     /**
      * 资源加载 回调

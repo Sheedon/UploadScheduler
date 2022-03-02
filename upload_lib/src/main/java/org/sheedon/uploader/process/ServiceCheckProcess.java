@@ -56,10 +56,11 @@ public class ServiceCheckProcess extends AbstractProcess {
             return true;
         }
 
-        isConnect = connByNetService(baseUrl);
+        //noinspection StatementWithEmptyBody
+        while (!(isConnect = connByNetService(baseUrl))){}
         lastHandleTime = nowTime;
 
-        return isConnect;
+        return true;
     }
 
     /**

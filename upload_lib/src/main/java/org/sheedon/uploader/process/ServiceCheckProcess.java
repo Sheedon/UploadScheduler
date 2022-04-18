@@ -5,6 +5,7 @@ import android.os.SystemClock;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 服务器连接检测流程，通过发起一个连接服务器请求，通过code == 200 来判断网络是否连接成功
@@ -56,8 +57,13 @@ public class ServiceCheckProcess extends AbstractProcess {
             return true;
         }
 
-        //noinspection StatementWithEmptyBody
-        while (!(isConnect = connByNetService(baseUrl))){}
+        while (!(isConnect = connByNetService(baseUrl))) {
+            try {
+                TimeUnit.MILLISECONDS.sleep(3 * INTERVAL);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         lastHandleTime = nowTime;
 
         return true;

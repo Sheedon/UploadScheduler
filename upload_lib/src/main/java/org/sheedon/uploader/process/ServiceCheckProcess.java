@@ -27,7 +27,11 @@ public class ServiceCheckProcess extends AbstractProcess {
     private boolean isConnect;
 
     ServiceCheckProcess(String baseUrl) {
-        this.baseUrl = baseUrl;
+        if (baseUrl.endsWith("/")) {
+            this.baseUrl = baseUrl;
+        } else {
+            this.baseUrl = baseUrl + "/";
+        }
     }
 
     /**
@@ -85,7 +89,7 @@ public class ServiceCheckProcess extends AbstractProcess {
             conn.setReadTimeout(1000 * 10);
             conn.setRequestMethod("GET");
             int s = conn.getResponseCode();
-            isConnect = s == 200;
+            isConnect = s < 500;
         } catch (IOException ignored) {
         } finally {
             if (conn != null) {

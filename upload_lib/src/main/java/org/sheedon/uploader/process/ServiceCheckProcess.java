@@ -2,6 +2,8 @@ package org.sheedon.uploader.process;
 
 import android.os.SystemClock;
 
+import org.sheedon.uploader.INetConnected;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -26,12 +28,20 @@ public class ServiceCheckProcess extends AbstractProcess {
     // 上一次网络情况
     private boolean isConnect;
 
-    ServiceCheckProcess(String baseUrl) {
-        if (baseUrl.endsWith("/")) {
+    private final INetConnected netConnected;
+
+    ServiceCheckProcess(String baseUrl, INetConnected netConnected) {
+        if (netConnected != null) {
+            this.netConnected = netConnected;
+            this.baseUrl = null;
+        } else if (baseUrl.endsWith("/")) {
             this.baseUrl = baseUrl;
+            this.netConnected = null;
         } else {
             this.baseUrl = baseUrl + "/";
+            this.netConnected = null;
         }
+
     }
 
     /**
@@ -61,7 +71,7 @@ public class ServiceCheckProcess extends AbstractProcess {
             return true;
         }
 
-        while (!(isConnect = connByNetService(baseUrl))) {
+        while (!(isConnect = checkConnected())) {
             try {
                 TimeUnit.MILLISECONDS.sleep(3 * INTERVAL);
             } catch (InterruptedException e) {
@@ -71,6 +81,13 @@ public class ServiceCheckProcess extends AbstractProcess {
         lastHandleTime = nowTime;
 
         return true;
+    }
+
+    private boolean checkConnected() {
+        if (netConnected == null) {
+            return connByNetService(baseUrl);
+        }
+        return netConnected.isConnected();
     }
 
     /**

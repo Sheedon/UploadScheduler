@@ -86,7 +86,7 @@ public class UploadScheduleClient {
         if (trigger != null) {
             trigger.onDestroy();
         }
-        if(queue != null){
+        if (queue != null) {
             queue.onDestroy();
         }
     }
@@ -106,6 +106,8 @@ public class UploadScheduleClient {
         // 服务器链接url
         private String baseUrl;
 
+        private INetConnected netConnected;
+
         public Builder(Context context) {
             this.context = context;
             queue = new EventQueue();
@@ -120,6 +122,17 @@ public class UploadScheduleClient {
          */
         public Builder process(@NonNull AbstractProcess process) {
             this.process = process;
+            return this;
+        }
+
+        /**
+         * 添加网络连接状态
+         *
+         * @param netConnected 网络连接状态监听器
+         * @return Builder 构造器
+         */
+        public Builder netConnected(@NonNull INetConnected netConnected) {
+            this.netConnected = netConnected;
             return this;
         }
 
@@ -145,12 +158,12 @@ public class UploadScheduleClient {
          */
         public UploadScheduleClient build() {
 
-            if (process == null && (baseUrl == null || baseUrl.trim().isEmpty())) {
+            if (process == null && netConnected == null && (baseUrl == null || baseUrl.trim().isEmpty())) {
                 throw new NullPointerException("please add AbstractProcess or baseUrl");
             }
 
             if (process == null) {
-                process = new DefaultProcess(context, baseUrl, queue, trigger.getWorkHandler());
+                process = new DefaultProcess(context, baseUrl, netConnected, queue, trigger.getWorkHandler());
             }
 
             return new UploadScheduleClient(this);

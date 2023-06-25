@@ -3,6 +3,7 @@ package org.sheedon.uploader.process;
 import android.content.Context;
 
 import org.sheedon.uploader.EventQueue;
+import org.sheedon.uploader.INetConnected;
 import org.sheedon.uploader.MessageHandler;
 
 /**
@@ -26,9 +27,9 @@ public class DefaultProcess extends AbstractProcess {
      * @param queue       事件队列
      * @param workHandler 消息工作执行器
      */
-    public DefaultProcess(Context context, String baseUrl, EventQueue queue, MessageHandler workHandler) {
+    public DefaultProcess(Context context, String baseUrl, INetConnected netConnected, EventQueue queue, MessageHandler workHandler) {
         process = new NetCheckProcess(context);
-        ServiceCheckProcess serviceCheckProcess = new ServiceCheckProcess(baseUrl);
+        ServiceCheckProcess serviceCheckProcess = new ServiceCheckProcess(baseUrl, netConnected);
         ScheduleProcess scheduleProcess = new ScheduleProcess(queue, workHandler);
 
 

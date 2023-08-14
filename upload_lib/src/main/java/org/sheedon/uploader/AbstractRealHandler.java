@@ -100,6 +100,10 @@ public abstract class AbstractRealHandler<Source> {
             if (messageHandleCenter != null) {
                 messageHandleCenter.sendFailureMessage();
             }
+
+            if (sources.isEmpty()) {
+                loadSourceToSubmit();
+            }
         }
     };
 

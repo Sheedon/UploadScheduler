@@ -92,6 +92,11 @@ public abstract class AbstractRealHandler<Source> {
          */
         @Override
         public void sendFailureMessage() {
+            if (needRemoveFirstByFailure()) {
+                if (!sources.isEmpty()) {
+                    sources.remove(0);
+                }
+            }
             if (messageHandleCenter != null) {
                 messageHandleCenter.sendFailureMessage();
             }
@@ -166,12 +171,16 @@ public abstract class AbstractRealHandler<Source> {
      */
     protected abstract void handleRealEvent(Source source, MessageHandleCenter center);
 
+    protected boolean needRemoveFirstByFailure() {
+        return false;
+    }
+
 
     /**
      * 销毁
      */
     public void destroy() {
-        if(scheduleClient != null){
+        if (scheduleClient != null) {
             scheduleClient.removeEvent(this.getClass().getCanonicalName());
         }
         sources.clear();
